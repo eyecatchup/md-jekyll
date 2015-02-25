@@ -1,0 +1,15 @@
+{
+  "name": "paper-fab-menu",
+  "homepage": "https://github.com/cwdoh/paper-fab-menu",
+  "version": "0.0.1",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "ab93e8d77f2722437fd111cf06dfb6d30c059af1"
+  },
+  "_source": "git://github.com/cwdoh/paper-fab-menu.git",
+  "_target": "~0.0.1",
+  "_originalSource": "cwdoh/paper-fab-menu",
+  "_direct": true
+}

@@ -1,0 +1,29 @@
+{
+  "name": "paper-jekyll-post",
+  "version": "0.0.1",
+  "authors": [
+    "Stephan Schmitz <eyecatchup@gmail.com>"
+  ],
+  "description": "Element providing solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "material design"
+  ],
+  "main": "paper-jekyll-post.html",
+  "license": "MIT",
+  "homepage": "https://github.com/eyecatchup/paper-jekyll-post/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.4",
+	"paper-card": "PolymerLabs/paper-card",
+	"paper-button": "Polymer/paper-button#^0.5"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.2.3"
+  }
+}

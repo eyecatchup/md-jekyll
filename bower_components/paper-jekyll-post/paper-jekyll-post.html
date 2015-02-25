@@ -1,0 +1,135 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../font-roboto/roboto.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<!--
+Element providing solution to no  problem in particular.
+
+##### Example
+
+    <paper-jekyll-post 
+		author='Stephan Schmitz'
+		authorImg='//lh6.googleusercontent.com/-p9HfoP2THnE/AAAAAAAAAAI/AAAAAAAAAAA/mgjpY0hRC3w/s32-c/photo.jpg'
+		postImg='//placehold.it/350x150'
+		postTitle='My post'
+		postUrl='/2015/02/21/yay-my-new-material-design-blog-is-up/'
+		published='2015-02-21'>
+		{{content}}
+	</paper-jekyll-post>
+
+@element paper-drawer
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://eyecatchup.github.io/paper-jekyll-post
+-->
+<polymer-element name="paper-jekyll-post" attributes="author authorImg postImg postTitle postUrl published titleColor">
+
+  <template>
+
+    <link rel="stylesheet" href="paper-jekyll-post.css">
+
+	<paper-card class='fancy' disableSwipe>
+	  <div content>
+		<div style="background-image:url({{authorImg}});" class="round-placeholder profile small"></div>
+		<div class="title small-profile">
+		  <div class="medium" style="font-weight: 300; padding: 2px 0;">By: {{author}}</div>
+		  <div class="small" style="font-weight: 300; font-size: smaller;">Posted: {{published}}</div>
+		</div>
+	  </div>
+
+	  <template if="{{postImg}}">
+        <img src="{{postImg}}">
+      </template>
+	  
+	  <div class="no-top" content>
+		<div class="big" style="color:{{titleColor}};">
+			<template if="{{postUrl}}">
+				<a href="{{postUrl}}" style="color:{{titleColor}};">{{postTitle}}</a>
+			</template>
+		</div>
+		<div class="medium"><content></content></div>
+	  </div>
+
+	  <div actions>
+		<paper-icon-button icon="favorite" title="favorite"></paper-icon-button>
+		<paper-icon-button icon="bookmark" title="bookmark"></paper-icon-button>
+		<paper-icon-button icon="send" title="send"></paper-icon-button>
+	  </div>
+	</paper-card>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type string
+       * @default 'Stephan Schmitz'
+       */
+      author: 'Stephan Schmitz',
+      authorImg: '//lh6.googleusercontent.com/-p9HfoP2THnE/AAAAAAAAAAI/AAAAAAAAAAA/mgjpY0hRC3w/s32-c/photo.jpg',
+      titleColor: '#009688',
+
+      /**
+       * `fancy` is a property that does something fancy.
+       *
+       * @property fancy
+       * @type bool
+       * @default false
+       */
+      fancy: false,
+
+      ready: function() {
+        // Ready is a lifecycle callback.
+        // You can do setup work in here.
+        // More info: http://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
+      },
+
+      /**
+       * The `sayHello` method will return a greeting.
+       *
+       * @method sayHello
+       * @param {String} greeting Pass in a specific greeting.
+       * @return {String} Returns a string greeting.
+       */
+      sayHello: function(greeting) {
+        var response = greeting || 'Hello World!';
+        return 'paper-drawer says, ' + response;
+      },
+
+      /**
+       * The `paper-drawer-lasers-success` event is fired whenever we
+       * call fireLasers.
+       *
+       * @event paper-drawer-lasers-success
+       * @param {Object} detail
+       *   @param {string} detail.sound An amazing sound.
+       */
+
+      /**
+       * The `fireLasers` method will fire the lasers. At least
+       * it will dispatch an event that claims lasers were fired :)
+       *
+       * @method fireLasers
+       */
+      fireLasers: function() {
+        this.fire('paper-drawer-lasers-success', { sound: 'Pew pew pew!' });
+      }
+
+    });
+
+  </script>
+
+</polymer-element>

@@ -1,0 +1,94 @@
+/*
+ * @license
+ * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+ */
+
+:host {
+  display: block;
+  font-family: 'RobotoDraft', sans-serif;
+  margin-bottom: 8px auto;
+}
+
+/* To ensure your styling works under the Shadow DOM polyfill, see
+   www.polymer-project.org/docs/polymer/styling.html#directives */
+polyfill-next-selector { content: ':host > h2'; }
+::content h2 {
+  color: blue;
+}
+paper-card {
+	width: 100%;
+	margin: 8px auto;
+	/*padding-left:4px;
+	padding-right:4px;*/
+}
+paper-card [autofocus] {
+	color: #ff9c33;
+}
+paper-button {
+	font-size: 1.2rem;
+}
+.fancy .round-placeholder {
+	display: inline-block;
+	height: 64px;
+	width: 64px;
+	border-radius: 50%;
+	background: #e9005f;
+	color: white;
+	line-height: 64px;
+	font-size: 30px;
+	text-align: center;
+}
+.fancy .title {
+	position: absolute;
+	top: 30px;
+	left: 100px;
+}
+.fancy img {
+	width: 100%;
+}
+.fancy .big a {
+  text-decoration: none;
+}
+.fancy .big {
+	/*font-size: 22px;*/
+	font-size: 1.8rem;
+	line-height: 2.1rem;
+	padding: 8px 0 16px;
+	color: #009688;
+	/*color: #ff9c33;*/
+	font-weight: 400;
+}
+.fancy .medium {
+	font-size: 1.2rem;
+	line-height: 1.8rem;
+	padding-bottom: 8px;
+	font-weight: 300;
+}
+.hidden {
+	visibility: hidden;
+}
+.no-top  {
+	padding-top: 0;
+}
+.content {
+	background: #f5f5f5;
+	/*margin: 8px 0;*/
+}
+.title.small-profile > .medium{
+  font-size: 1.1rem;
+  line-height: 1.2rem;
+}
+.title.small-profile {
+	top: 13px;
+	left: 72px;
+}
+.round-placeholder.profile.small {
+	height: 32px;
+	width: 32px;
+	line-height: 32px;
+}

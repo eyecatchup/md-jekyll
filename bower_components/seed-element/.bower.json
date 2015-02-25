@@ -1,0 +1,37 @@
+{
+  "name": "seed-element",
+  "version": "0.1.4",
+  "authors": [
+    "Anonymous <anonymous@example.com>"
+  ],
+  "description": "Element providing solution to no problem in particular.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "seed"
+  ],
+  "main": "seed-element.html",
+  "license": "MIT",
+  "homepage": "https://github.com/<USERNAME>/seed-element/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.4"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.2.3"
+  },
+  "_release": "0.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.4",
+    "commit": "432e8e7c98ef5bc86eb13a05f26e05432125c503"
+  },
+  "_source": "git://github.com/eyecatchup/seed-element.git",
+  "_target": "~0.1.4",
+  "_originalSource": "eyecatchup/seed-element",
+  "_direct": true
+}

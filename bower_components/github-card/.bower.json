@@ -1,0 +1,14 @@
+{
+  "name": "github-card",
+  "homepage": "https://github.com/pazguille/github-card",
+  "_release": "27e15c3b83",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "27e15c3b83e9194182a976b3657f9c22664ac362"
+  },
+  "_source": "git://github.com/pazguille/github-card.git",
+  "_target": "*",
+  "_originalSource": "pazguille/github-card",
+  "_direct": true
+}

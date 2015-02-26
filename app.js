@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2015 Stephan Schmitz, <https://eyecatchup.github.io/>, <eyecatchup@gmail.com>. All rights reserved.
+ * This code may only be used under the MIT license found at <http://eyecatchup.mit-license.org/>.
+ */
 (function() {
     "use strict";
 
@@ -31,7 +35,7 @@
                 primaryLinkColor: '#e91e63', // // Material Design Pink 500
                 bodyBgColor: '#f5f5f5', // Material Design Grey 100
                 subpageBgColor: '#f5f5f5', // Material Blue Grey 100
-                drawerBgImg: 'bg1.jpg', // optional, set (int) 0 if not required.
+                drawerBgImg: 'assets/img/bg1.jpg', // optional, set (int) 0 if not required.
             },
             /**
              * The settings below are completely optional and are NOT required!
@@ -52,22 +56,22 @@
                         url: 'projects',
                         content: [
                             {
-                                headline: 'SEOstats PHP Library',
+                                title: 'SEOstats PHP Library',
                                 text: 'SEOstats is a powerful open source PHP library to request a bunch of SEO relevant metrics. It is the second most successful SEO open source project on GitHub and on Packagist and was featured in several O\'Reilly books.',
                                 url: 'https://github.com/eyecatchup/SEOstats',
                             },
                             {
-                                headline: 'PHP class GWTdata',
+                                title: 'PHP class GWTdata',
                                 text: 'This project provides an easy way to automate downloading of data tables (as CSV) from Google Webmaster Tools and tries to provide a PHP alternative to the Python script available by Google. It was featured in O\'Reilly\'s book "Suchmaschinenoptimierung mit Google Webmaster Tools" by Stephan Czysch.',
                                 url: 'https://github.com/eyecatchup/php-webmaster-tools-downloads',
                             },
                             {
-                                headline: 'PHP class GwtCrawlErrors',
+                                title: 'PHP class GwtCrawlErrors',
                                 text: 'Similar to GWTdata, this project provides an easy way to automate downloading of crawl errors from Google Webmaster Tools. It was also featured in the O\'Reilly book "Suchmaschinenoptimierung mit Google Webmaster Tools" by Stephan Czysch.',
                                 url: 'https://github.com/eyecatchup/GWT_CrawlErrors-php',
                             },
                             {
-                                headline: 'USB Mass Storage Toggle (Android App)',
+                                title: 'USB Mass Storage Toggle (Android App)',
                                 text: 'Android App for Android 4.0+. USB Mass Storage Hack to use with ICS Ports that doesn\'t support UMS (yet). To date, it was installed more than 100,000 times.',
                                 url: 'https://github.com/eyecatchup/net.bexton.android.UsbMassStorageToggle',
                             }
@@ -79,7 +83,7 @@
                         icon: 'account-box',
                         primaryColor: '#009688',
                         url: 'about',
-                        content: 'about-me.html',
+                        content: './_pages/about-me.html',
                     }
                 ],
                 navItemsOffpage: [
@@ -110,7 +114,7 @@
 
 
         //Get the template instance and apply the config data to its model.
-        var templateInstance = document.querySelector('material-jekyll');
+        var templateInstance = document.querySelector('polymer-material-design-jekyll-spa');
 
         templateInstance.addData(config);
         templateInstance.setPrimaryColor(config.basic.primaryColor);

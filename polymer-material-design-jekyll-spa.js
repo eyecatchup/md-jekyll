@@ -1,5 +1,8 @@
-
-Polymer('material-jekyll', {
+/**
+ * Copyright (c) 2015 Stephan Schmitz, <https://eyecatchup.github.io/>, <eyecatchup@gmail.com>. All rights reserved.
+ * This code may only be used under the MIT license found at <http://eyecatchup.mit-license.org/>.
+ */
+Polymer('polymer-material-design-jekyll-spa', {
 
     /**
      * @property preventDispose
@@ -12,11 +15,12 @@ Polymer('material-jekyll', {
 
     /**
      * @method created
-     * An instance of the material-jekyll element was created.
+     * An instance of the polymer-material-design-jekyll-spa element was created.
      * https://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
      */
     created: function(event, detail, sender) {
         console.log('Lifecycle callback method fired: [created].');
+
         if (event !== undefined) {
             console.dir('Event:');
             console.dir(event);
@@ -33,11 +37,12 @@ Polymer('material-jekyll', {
 
     /**
      * @method attached
-     * An instance of the material-jekyll element was inserted into the DOM.
+     * An instance of the polymer-material-design-jekyll-spa element was inserted into the DOM.
      * https://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
      */
     attached: function(event, detail, sender) {
         console.log('Lifecycle callback method fired: [attached].');
+
         if (event !== undefined) {
             console.dir('Event:');
             console.dir(event);
@@ -54,11 +59,12 @@ Polymer('material-jekyll', {
 
     /**
      * @method detached
-     * An instance of the material-jekyll element was removed from the DOM.
+     * An instance of the polymer-material-design-jekyll-spa element was removed from the DOM.
      * https://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
      */
     detached: function(event, detail, sender) {
         console.log('Lifecycle callback method fired: [detached].');
+
         if (event !== undefined) {
             console.dir('Event:');
             console.dir(event);
@@ -74,17 +80,6 @@ Polymer('material-jekyll', {
     },
 
     /**
-     * @method attributeChanged
-     * An attribute was added, removed, or updated.
-     * https://www.polymer-project.org/docs/polymer/polymer.html#lifecyclemethods
-     */
-    attributeChanged: function(attrName, oldVal, newVal) {
-        console.log('Lifecycle callback method fired: [attributeChanged].');
-        //var newVal = this.getAttribute(attrName);
-        console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
-    },
-
-    /**
      * @method ready
      * The polymer-element has been fully prepared (e.g. shadow DOM created,
      * property observers setup, event listeners attached, etc).
@@ -93,7 +88,7 @@ Polymer('material-jekyll', {
     ready: function() {
         console.log('Lifecycle callback method fired: [ready].');
 
-        // initialize the element's model
+        // Initialize the element's model.
         this.author = {
             name: '',
             domain: '',
@@ -104,7 +99,6 @@ Polymer('material-jekyll', {
         };
 
         this.toolbarTitle = '';
-        this.welcomeToast = 'Welcome to the site.';
 
         this.primaryColor = '#3f51b5'; // Material Design Indigo 500
         this.primaryColor1 = '#3f51b5'; // Material Design Indigo 500
@@ -121,7 +115,7 @@ Polymer('material-jekyll', {
         this.subpageBgColor2 = '#cfd8dc'; // Material Blue Grey 100
         this.drawerBgColor = '#ffffff'; // Material Design Grey 100
         this.drawerTextColor = '#212121'; // Material Design Grey 700
-        this.drawerBgImg = 'bg.jpg'; // optional, set (int) 0 if not required.
+        this.drawerBgImg = 'assets/img/bg.jpg'; // optional, set (int) 0 if not required.
 
         this.drawerToolbarHeight = '175px';
         this.drawerWidth = '305px';
@@ -140,7 +134,7 @@ Polymer('material-jekyll', {
         this.dropdownMenu = [
             {
                 label: 'Fork me',
-                url: 'https://github.com/eyecatchup/material-jekyll',
+                url: 'https://github.com/eyecatchup/polymer-material-design-jekyll-spa',
             },
             {
                 label: 'About',
@@ -148,7 +142,8 @@ Polymer('material-jekyll', {
             }
         ];
 
-        this.footerTextContent = 'Made with love in Cologne, Germany.';
+        this.drawerFooterText = 'Made with love in Cologne, Germany.';
+        this.toastText = 'Welcome to the site.';
 
         this.scrollTopDuration = 200;
         this.scrollTop_ = this.scrollTop_ || 0;
@@ -159,6 +154,8 @@ Polymer('material-jekyll', {
         this.pageTitle = '';
         this.dropdownState = 'core-closed';
         this.navshape = 'menu';
+        this._lastHash = 'blog';
+        this.inited = false;
 
         return this;
     },
@@ -176,11 +173,11 @@ Polymer('material-jekyll', {
     domReady: function() {
         console.log('Lifecycle callback method fired: [domReady].');
 
-        window.onhashchange = this.hashChanged;
+        window.onhashchange = (this.hashChanged).bind(this);
 
         this.async(function() {
             this.parseLocationHash();
-        }, null, 350);
+        }, null, 200);
     },
 
     // CustomElement helper methods
@@ -191,12 +188,14 @@ Polymer('material-jekyll', {
      * core-animated-pages cycle when going forward or backwards in the history.
      */
     hashChanged: function(event, detail, sender) {
-        console.log('onhashchanged');
-        try{
+        console.log('[hashChanged] Old hash: "' + this.getLastHash()
+          + '", new hash: "' + event.currentTarget.location.hash.slice(1) + '".');
+
+        try {
             event.currentTarget.document.activeElement.parseLocationHash();
-            //event.currentTarget.document.activeElement.scrollToTop();
         }
         catch(e){ }
+
         return;
     },
 
@@ -206,14 +205,32 @@ Polymer('material-jekyll', {
      * the document's current location hash.
      */
     parseLocationHash: function() {
-        console.log('parseLocationHash');
-        var route = window.location.hash.slice(1);
-            for (var i = 0, item; item = this.navItemsOnpage[i]; i++) {
-            if (item.url === route && item.id !== this.page) {
-                this.goToPage(item.id);
-                return;
+        var route = window.location.hash.slice(1),
+            log = '[parseLocationHash] "' + route + '"';
+
+        if (route === '') {
+            route = this.navItemsOnpage[0].url;
+            log += ' redireting to "' + route + '" ...';
+
+            console.log(log);
+
+            window.history.replaceState(0, this.navItemsOnpage[0].label,
+              '#' + this.navItemsOnpage[0].url);
+
+            return;
+        }
+
+        for (var i = 0, page; page = this.navItemsOnpage[i]; i++) {
+            if (page.url === route &&
+              (this.inited === false || page.id !== this.page))
+              {
+                this.setLastHash(page.url);
+                this.goToPage(page.id);
+                break;
             }
         }
+
+        return;
     },
 
     /**
@@ -221,47 +238,71 @@ Polymer('material-jekyll', {
      * Set template model data.
      */
     addData: function(data) {
-        data.basic.author && (this.author = data.basic.author);
-        data.basic.toolbarTitle && (this.toolbarTitle = data.basic.toolbarTitle);
-        data.basic.primaryColor && (this.primaryColor = data.basic.primaryColor);
-        data.basic.primaryLinkColor && (this.primaryLinkColor = data.basic.primaryLinkColor);
-        data.basic.bodyBgColor && (this.bodyBgColor = data.basic.bodyBgColor);
-        data.basic.subpageBgColor && (this.subpageBgColor = data.basic.subpageBgColor);
-        data.basic.drawerBgImg && (this.drawerBgImg = data.basic.drawerBgImg);
+
+        data.basic.author &&
+            (this.author = data.basic.author);
+
+        data.basic.toolbarTitle &&
+            (this.toolbarTitle = data.basic.toolbarTitle);
+
+        data.basic.primaryColor &&
+            (this.primaryColor = data.basic.primaryColor);
+
+        data.basic.primaryLinkColor &&
+            (this.primaryLinkColor = data.basic.primaryLinkColor);
+
+        data.basic.bodyBgColor &&
+            (this.bodyBgColor = data.basic.bodyBgColor);
+
+        data.basic.subpageBgColor &&
+            (this.subpageBgColor = data.basic.subpageBgColor);
+
+        data.basic.drawerBgImg &&
+            (this.drawerBgImg = data.basic.drawerBgImg);
 
         if (data.optional.navItemsOnpage.length) {
-            for (var i, i = 0; i < data.optional.navItemsOnpage.length; i++) {
-                var page = data.optional.navItemsOnpage[i];
+            for (var i = 0, page; page = data.optional.navItemsOnpage[i]; i++) {
                 this.navItemsOnpage.push(page);
 
                 if (page.url === 'about') {
-                    var _self = this;
-                    var link = document.createElement('link');
-                    link.rel = 'import';
-                    link.href = page.content;
-                    link.async = 'async';
-                    link.onload = function(e) {
-                        var template = this.import.querySelector('template');
-                        var clone = document.importNode(template.content, true)
-                        _self.$.about_content.appendChild(clone);
-                    };
-                    document.head.appendChild(link);
+                    try {
+                        var _self = this,
+                            link = document.createElement('link');
+
+                        link.rel = 'import';
+                        link.href = page.content;
+                        link.async = 'async';
+                        link.onload = function(e) {
+                            var clone = document.importNode(
+                              this.import.querySelector('template').content, 1);
+
+                            _self.$.about_content.appendChild(clone);
+                        };
+
+                        document.head.appendChild(link);
+                    }
+                    catch(e){ }
                 }
             }
         }
 
         if (data.optional.navItemsOffpage.length) {
-            for (var i, i = 0; i < data.optional.navItemsOffpage.length; i++) {
-                var page = data.optional.navItemsOffpage[i];
-                this.navItemsOffpage.push(page);
+            for (var i = 0, a; a = data.optional.navItemsOffpage[i]; i++) {
+                this.navItemsOffpage.push(a);
             }
         }
+
+        !this.inited && (this.inited = true, console.log('this.inited = true'));
+
+        return true;
     },
 
     goToPage: function(id) {
         this.closeDrawer();
+
         id = parseFloat(id);
-        console.log('Going from page ' + this.lastpage + ' to page ' + id);
+        console.log('[goToPage] Going from page ' + this.lastpage
+          + ' to page ' + id);
 
         this.async(function() {
             this.scrollToTop2(this.lastpage);
@@ -269,62 +310,87 @@ Polymer('material-jekyll', {
         }, null, 50);
 
         this.async(function() {
-            if (this.navItemsOnpage[id] !== undefined && this.navItemsOnpage[id] !== null) {
+            if (this.navItemsOnpage[id] !== undefined &&
+              this.navItemsOnpage[id] !== null)
+              {
                 this.setPrimaryColor(this.navItemsOnpage[id].primaryColor);
                 this.pageTitle = this.navItemsOnpage[id].label;
             }
-        }, null, 150);
+        }, null, 250);
 
         this.async(function() {
-            if (this.navItemsOnpage[id] !== undefined && this.navItemsOnpage[id] !== null) {
+            if (this.navItemsOnpage[id] !== undefined &&
+              this.navItemsOnpage[id] !== null)
+              {
                 this.page = id;
                 this.lastpage = id;
+
                 if (this.page !== this.$.pages.selected) {
                     this.$.pages.selected = id;
                 }
+
                 if (window.location.hash.slice(1) !== this.navItemsOnpage[id].url) {
                     window.location.hash = '#' + this.navItemsOnpage[id].url;
                 }
             }
-        }, null, 1250);
+        }, null, 850);
 
         return;
     },
 
     goToSubPage: function(id) {
         id = parseFloat(id);
-        console.log('Going from subpage ' + this.subpage + ' to subpage ' + id);
+        console.log('[goToSubPage] Going from subpage ' + this.subpage
+          + ' to subpage ' + id);
+
         this.subpage = id;
         this.menuIconTransform();
+
         if (this.subpage !== this.$.subpages.selected) {
             this.$.subpages.selected = id;
         }
-        this.setPrimaryColor((id === 0 ? this.navItemsOnpage[id].primaryColor : '#607d8b'));
-        return true;
+
+        this.setPrimaryColor((id === 0) ? this.navItemsOnpage[0].primaryColor
+            : '#607d8b');
+
+        return;
     },
 
     selectSubpage: function(e) {
-        var i = e.target.templateInstance.model.item;
-        console.dir('set subpage view from ' + this.$.subpages.selected + ' to ' + i+1);
-        this.goToSubPage(i+1);
+        var i = e.target.templateInstance.model.item,
+            i = parseFloat(i) + 1;
+
+        console.log('[selectSubpage] set subpage view from ' +
+            parseFloat(this.$.subpages.selected) + ' to ' + i);
+
+        this.goToSubPage(i);
     },
 
     subpageBack: function() {
-        console.dir('set lastSelected from ' + this.lastSelected + ' to ' + parseFloat(this.$.subpages.selected));
+        console.log('[subpageBack] set lastSelected from ' + this.lastSelected
+            + ' to ' + parseFloat(this.$.subpages.selected));
+
         this.lastSelected = parseFloat(this.$.subpages.selected);
+
         this.goToSubPage(0);
     },
 
     selectAction: function(e, detail) {
         var rel = detail.item.attributes.rel;
+
         if (detail.isSelected == true && rel && rel.nodeValue != '') {
             this.closeDrawer();
             var label = detail.item.attributes.label;
+
             if (rel.nodeValue == 'page') {
-                if (label && parseFloat(label.nodeValue) != this.lastpage) {
+                if (label && (parseFloat(label.nodeValue) != this.lastpage)) {
                     this.$.nestedpages.parentNode.style.position = 'initial';
-                    if (window.location.hash.slice(1) !== this.navItemsOnpage[parseFloat(label.nodeValue)].url) {
-                        window.location.hash = '#' + this.navItemsOnpage[parseFloat(label.nodeValue)].url;
+
+                    if (window.location.hash.slice(1) !==
+                      this.navItemsOnpage[parseFloat(label.nodeValue)].url)
+                      {
+                        window.location.hash = '#' +
+                          this.navItemsOnpage[parseFloat(label.nodeValue)].url;
                     }
                 }
             }
@@ -333,21 +399,25 @@ Polymer('material-jekyll', {
                 this.goToPage(this.page);
             }
             else if (rel.nodeValue == 'close') {
-                detail.item.classList.toggle('core-selected');    
+                detail.item.classList.toggle('core-selected');
             }
         }
+
         return;
     },
 
     selectMenu: function(e, detail, sender) {
         e.preventDefault();
+
         this.$.drop.toggle();
-        var href = sender !== undefined ? sender.attributes.rel.nodeValue : 0;
+
+        var href = (sender !== undefined) ? sender.attributes.rel.nodeValue : 0;
 
         if (href && href !== '#') {
             window.location = href;
         }
         else {
+            this.$.dialog.style.fontFamily = "'RobotoDraft', sans-serif";
             this.$.dialog.toggle();
         }
     },
@@ -364,8 +434,10 @@ Polymer('material-jekyll', {
 
     dropdown: function(e) {
         e.preventDefault();
+
         this.$.drop.toggle();
-        this.dropdownState = this.dropdownState == 'core-closed' ? 'core-opened' : 'core-closed';
+        this.dropdownState = (this.dropdownState == 'core-closed') ?
+          'core-opened' : 'core-closed';
     },
 
     tbicon: function(e) {
@@ -375,17 +447,28 @@ Polymer('material-jekyll', {
 
     menuIconTransform: function() {
         var shape = (this.navshape === 'menu') ? 'left-arrow' : 'menu';
+
         if (!!shape) {
             this.navshape = shape;
         }
     },
 
+    getLastHash: function() {
+        return this._lastHash;
+    },
+
+    setLastHash: function(str) {
+        this._lastHash = str;
+    },
+
     getScrollElem: function() {
-        return (this.page === 0 || this.$.pages.selected === 0) ? this.$.noscroll : this.$.pages;
+        return (this.page === 0 || this.$.pages.selected === 0) ?
+          this.$.noscroll : this.$.pages;
     },
 
     getScrollTop: function() {
-        return (this.page === 0 || this.$.pages.selected === 0) ? this.$.noscroll.scrollTop : this.$.pages.scrollTop;
+        return (this.page === 0 || this.$.pages.selected === 0) ?
+          this.$.noscroll.scrollTop : this.$.pages.scrollTop;
     },
 
     getScrollY: function() {
@@ -401,18 +484,19 @@ Polymer('material-jekyll', {
         if (e !== null && e !== undefined) {
             e.preventDefault();
         }
+
         var scrollElem = this.getScrollElem();
 
-        console.dir('scrollToTop fired.');
-        console.dir('scrollTop: ' + scrollElem.scrollTop);
+        //console.dir('scrollToTop fired.');
+        //console.dir('scrollTop: ' + scrollElem.scrollTop);
 
-        var scrollStep =- (scrollElem.scrollTop / (this.scrollTopDuration / 15)),
+        var step =- (scrollElem.scrollTop / (this.scrollTopDuration / 15)),
             scrollInterval = setInterval(function() {
-            if (scrollElem.scrollTop != 0) {
-                scrollElem.scrollTop += scrollStep;
-            }
-            else clearInterval(scrollInterval);
-        }, 15);
+                if (scrollElem.scrollTop != 0) {
+                    scrollElem.scrollTop += step;
+                }
+                else clearInterval(scrollInterval);
+            }, 15);
 
         /* There's an odd glitch with the FAB not releasing the focused state
          * properly. Until I know what happens, this workaround seems to help.
@@ -437,16 +521,16 @@ Polymer('material-jekyll', {
     scrollToTop2: function(id) {
         var scrollElem = (id === 0) ? this.$.noscroll : this.$.pages;
 
-        console.dir('scrollToTop2 fired.');
-        console.dir('scrollTop: ' + scrollElem.scrollTop);
+        //console.dir('scrollToTop2 fired.');
+        //console.dir('scrollTop: ' + scrollElem.scrollTop);
 
-        var scrollStep =- (scrollElem.scrollTop / (this.scrollTopDuration / 15)),
+        var step =- (scrollElem.scrollTop / (this.scrollTopDuration / 15)),
             scrollInterval = setInterval(function() {
-            if (scrollElem.scrollTop != 0) {
-                scrollElem.scrollTop += scrollStep;
-            }
-            else clearInterval(scrollInterval);
-        }, 15);
+                if (scrollElem.scrollTop != 0) {
+                    scrollElem.scrollTop += step;
+                }
+                else clearInterval(scrollInterval);
+            }, 15);
 
         return true;
     },
@@ -462,25 +546,28 @@ Polymer('material-jekyll', {
     },
 
     cardTransitionDone: function(e) {
-        console.log('cardTransitionDone');
-        console.dir(e.currentTarget);
+        //console.log('cardTransitionDone');
+        //console.dir(e.currentTarget);
 
         if (this.$.nestedpages.classList.contains('page')) {
             this.updateFrameHeight();
         }
+
         this.async(function() {
             if (this.$.nestedpages.parentNode.classList.contains('core-selected')) {
                 this.$.nestedpages.parentNode.style.position = 'initial';
             } else {
                 this.$.nestedpages.parentNode.style.position = '';
             }
-        }, null, 800);
+        }, null, 650);
     },
 
     observeScroll: function(e, target, sender) {
         var currScrollTop = this.getScrollY();
 
-        if (e.type === 'scroll' && e.path.length && currScrollTop !== e.path[0].scrollTop) {
+        if (e.type === 'scroll' && e.path.length &&
+          currScrollTop !== e.path[0].scrollTop)
+          {
             if (0 >= e.path[0].scrollTop) {
                 this.scrollClass = 'down';
                 this.setScrollY(0);
@@ -505,5 +592,6 @@ Polymer('material-jekyll', {
     setPrimaryColor: function(str) {
         this.primaryColor = str;
         document.querySelector('meta[name=theme-color]').content = this.primaryColor;
+        document.querySelector('#shim').textContent = 'body{overflow:hidden;} overlay-host /deep/ h1 {font-size:24px;font-weight:500;} overlay-host /deep/ h1, overlay-host /deep/ a{color:' + this.primaryLinkColor + ';}';
     }
 });

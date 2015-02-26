@@ -1,4 +1,7 @@
-<!doctype html>
+<!--
+Copyright (c) 2015 Stephan Schmitz, <https://eyecatchup.github.io/>, <eyecatchup@gmail.com>. All rights reserved.
+This code may only be used under the MIT license found at <http://eyecatchup.mit-license.org/>.
+--><!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -14,104 +17,153 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="eyecatchUp - Stephan Schmitz">
 
-    <!--See: http://stackoverflow.com/a/27748416/624466
-    <link rel="alternate" href="android-app://com.example.android/example/gizmos">-->
-
-    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
-
+    <!-- Webcomponents polyfill and custom elements. -->
+    <script src="../bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="elements.html">
 
-    <!-- Required for (hidden) FAB!!! -->
-    <style>body {overflow: hidden;}</style>
+    <!-- !important -->
+    <style id="shim">body{overflow:hidden;}</style>
 </head>
 <body unresolved fullbleed>
 
-    <polymer-element name="material-jekyll">
+    <!-- The "polymer-material-design-jekyll-blog" CustomElement -->
+    <polymer-element name="polymer-material-design-jekyll-spa">
         <template id="t">
 
-            <!-- Custom element styles -->
-            <link rel="stylesheet" href="material-jekyll.css">
+            <!-- CustomElement "polymer-material-design-jekyll-spa" styles -->
+            <link rel="stylesheet" href="polymer-material-design-jekyll-spa.css">
 
-            <!-- DRAWER PANEL WRAPPER -->
+    <!-- + DRAWER PANEL WRAPPER -->
+
             <core-drawer-panel id="drawerPanel" forceNarrow selected="{{drawerSelected}}" drawerWidth="{{drawerWidth}}">
 
-                <!-- DRAWER PANEL WRAPPER > DRAWER PANEL -->
+        <!-- + DRAWER PANEL WRAPPER
+             +-+ DRAWER PANEL -->
+
                 <div drawer layout vertical>
 
-                    <!-- DRAWER PANEL WRAPPER > DRAWER PANEL > HEADER-TOOLBAR -->
+            <!-- + DRAWER PANEL WRAPPER
+                 +-+ DRAWER PANEL
+                   +-+ DRAWER HEADER/TOOLBAR -->
+
                     <core-toolbar style="{{drawerBgImg != 0 ? 'background-image: url(' + drawerBgImg + ');' : ''}}" class="tall">
                         <div class="top" flex>
-                            <div class="round-placeholder profile" style="{{author.picL != 0 ? 'background-image: url(' + author.picL + ');' : ''}}"></div>
+                            <div class="round profile" style="{{author.picL != 0 ? 'background-image: url(' + author.picL + ');' : ''}}"></div>
                         </div>
                         <div class="bottom">
-                            <div class="drawer-toolbar-text typo-white">{{author.name}}</div>
-                            <div class="drawer-toolbar-subtext">{{author.domain}}<!--<br>{{author.email}}--></div>
+                            <div class="drawer-toolbar-text white">{{author.name}}</div>
+                            <div class="drawer-toolbar-subtext">{{author.domain}}</div>
                         </div>
-                    </core-toolbar> <!-- END DRAWER PANEL WRAPPER > DRAWER PANEL > HEADER-TOOLBAR -->
+                    </core-toolbar>
 
-                    <!-- DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT -->
+                    <!-- END DRAWER HEADER/TOOLBAR -->
+
+            <!-- + DRAWER PANEL WRAPPER
+                 +-+ DRAWER PANEL
+                   +-+ DRAWER MENU -->
+
                     <div class="drawer-panel-content">
 
-                        <!-- DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > ON-PAGE LINK MENU -->
+                <!-- + DRAWER PANEL WRAPPER
+                     +-+ DRAWER PANEL
+                       +-+ DRAWER MENU
+                         +-+ DRAWER ON-PAGE LINKS -->
+
                         <template if="{{navItemsOnpage.length > 0}}">
                             <core-menu id="drawermenu" role="navigation" selected="{{page}}" valueattr="label" on-core-select="{{selectAction}}">
                                 <paper-item noink>This site</paper-item>
-                                <template repeat="{{item in navItemsOnpage}}">
-                                    <paper-item rel="page" label="{{item.id}}" class="{{$.pages.selected !=  item.id ? '' : 'core-selected'}}">
-                                        <paper-icon-button icon="{{item.icon}}"></paper-icon-button>
-                                        <a href="#{{item.url}}">{{item.label}}</a>
+                                <template repeat="{{a in navItemsOnpage}}">
+                                    <paper-item rel="page" label="{{a.id}}" class="{{$.pages.selected !=  a.id ? '' : 'core-selected'}}">
+                                        <paper-icon-button icon="{{a.icon}}"></paper-icon-button>
+                                        <a href="#{{a.url}}">{{a.label}}</a>
                                     </paper-item>
                                 </template>
                             </core-menu>
-                        </template> <!-- END DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > ON-PAGE LINK MENU -->
+                        </template>
 
-                        <!-- DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > OFF-PAGE LINK MENU -->
+                        <!-- END DRAWER ON-PAGE LINKS -->
+
+                <!-- + DRAWER PANEL WRAPPER
+                     +-+ DRAWER PANEL
+                       +-+ DRAWER MENU
+                         +-+ OFF-PAGE LINKS -->
+
                         <template if="{{navItemsOffpage.length > 0}}">
                             <core-menu id="drawermenuext" on-core-select="{{selectAction}}">
                                 <paper-item noink>Other sites</paper-item>
-                                <template repeat="{{item in navItemsOffpage}}">
+                                <template repeat="{{a in navItemsOffpage}}">
                                     <paper-item rel="ext">
                                         <paper-icon-button icon="open-in-new"></paper-icon-button>
-                                        <a href="{{item.url}}" target="_blank">{{item.label}}</a>
+                                        <a href="{{a.url}}" target="_blank">{{a.label}}</a>
                                     </paper-item>
                                 </template>
                             </core-menu>
-                        </template> <!-- END DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > OFF-PAGE LINK MENU -->
+                        </template>
 
-                        <!-- DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > CLOSE-LINK MENU -->
+                        <!-- END DRAWER OFF-PAGE LINKS -->
+
+                <!-- + DRAWER PANEL WRAPPER
+                     +-+ DRAWER PANEL
+                       +-+ DRAWER MENU
+                         +-+ DRAWER CLOSE-LINK -->
+
                         <core-menu id="drawerclose" on-core-select="{{selectAction}}">
                             <paper-item rel="close" on-tap="{{closeDrawer}}">
                                 <paper-icon-button icon="clear"></paper-icon-button>
-                                <a href="#" target="_self">Close Navigation</a>
+                                <a href="javascript:void(0);" target="_self">Close Navigation</a>
                             </paper-item>
-                        </core-menu> <!-- END DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > CLOSE-LINK MENU -->
+                        </core-menu>
 
-                        <!-- DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > DRAWER-FOOTER -->
+                        <!-- END DRAWER CLOSE-LINK -->
+
+                <!-- + DRAWER PANEL WRAPPER
+                     +-+ DRAWER PANEL
+                       +-+ DRAWER MENU
+                         +-+ DRAWER FOOTER -->
+
                         <core-menu layout vertical id="drawerfooter">
                             <paper-item noink><span>&copy; 2015 {{author.name}}</span></paper-item>
-                            <paper-item noink><span id="copy">{{footerTextContent}}</span></paper-item>
-                        </core-menu> <!-- END DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT > DRAWER-FOOTER -->
+                            <paper-item noink><span id="copy">{{drawerFooterText}}</span></paper-item>
+                        </core-menu>
 
-                    </div> <!-- END DRAWER PANEL WRAPPER > DRAWER PANEL > CONTENT -->
+                        <!-- END DRAWER FOOTER -->
 
-                </div> <!-- END DRAWER PANEL WRAPPER > DRAWER PANEL -->
+                    </div>
 
-                <!-- DRAWER PANEL WRAPPER > MAIN PANEL -->
+                    <!-- END DRAWER MENU -->
+
+                </div>
+
+                <!-- END + DRAWER PANEL WRAPPER
+                         +-+ DRAWER PANEL -->
+
+        <!-- + DRAWER PANEL WRAPPER
+             +-+ MAIN PANEL -->
+
                 <div main>
                     <core-header-panel id="mainHeaderPanel" flex>
 
-                        <!-- DRAWER PANEL WRAPPER > MAIN PANEL > HEADER-TOOLBAR -->
+                <!-- + DRAWER PANEL WRAPPER
+                     +-+ MAIN PANEL
+                       +-+ MAIN HEADER/TOOLBAR -->
+
                         <core-toolbar class="toolbar" cross-fade-all>
                             <icon-transition color="{{primaryToolbarTextColor}}" id="navicon" shape="{{navshape}}" on-tap="{{tbicon}}"></icon-transition>
                             <div id="title" flex>{{toolbarTitle}}</div>
                             <paper-icon-button icon="search"></paper-icon-button>
                             <paper-icon-button icon="more-vert" on-tap="{{dropdown}}"></paper-icon-button>
-                        </core-toolbar> <!-- END DRAWER PANEL WRAPPER > MAIN PANEL > HEADER-TOOLBAR -->
+                        </core-toolbar>
 
-                        <!-- DRAWER PANEL WRAPPER > MAIN PANEL > MAIN PAGES WRAPPER -->
+                        <!-- END MAIN HEADER/TOOLBAR -->
+
+                <!-- + DRAWER PANEL WRAPPER
+                     +-+ MAIN PANEL
+                       +-+ MAIN PAGES WRAPPER -->
+
                         <core-animated-pages layout vertical center id="pages" on-scroll="{{observeScroll}}" flex selected="{{page}}" on-core-animated-pages-transition-end="{{transitionend}}" on-transitionend="{{cardTransitionDone}}" transitions="slide-up">
 
-                                <!-- PAGE 1 (BLOG PLUS NESTED SUBPAGES) -->
+                                <!-- PAGE 1 - BLOG FEED (INCL. NESTED SUBPAGES) -->
+
                                 <section layout vertical center class="container">
                                     <div id="nestedpages" class="page" slide-up>
 
@@ -121,18 +173,18 @@
                                                 <div id="noscroll" on-scroll="{{observeScroll}}" fit hero-p>
                                                     <div id="container" layout vertical class="container" cross-fade>
 
-                                                        <div class="clearfix page-title"><h1>{{navItemsOnpage[0].label}}</h1></div>
+                                                        <div class="clearfix h"><h1>{{navItemsOnpage[0].label}}</h1></div>
 
-                                                        <template repeat="{{item in navItemsOnpage[0].content}}">
+                                                        <template repeat="{{post in navItemsOnpage[0].content}}">
                                                             <paper-jekyll-post
                                                                 author='{{author.name}}'
                                                                 authorImg='{{author.picS}}'
-                                                                postTitle='Testtitel {{item}}'
+                                                                postTitle='Testtitel {{post}}'
                                                                 postUrl='/2015/02/21/yay-my-new-material-design-blog-is-up/'
                                                                 published='2015-02-21'
                                                                 titleColor='{{primaryColor}}'
-                                                                hero-id='item-{{item}}'
-                                                                hero?='{{$.subpages.selected === item + 1 || lastSelected === item + 1}}'
+                                                                hero-id='item-{{post}}'
+                                                                hero?='{{$.subpages.selected === post + 1 || lastSelected === post + 1}}'
                                                                 on-tap='{{selectSubpage}}'>
                                                             </paper-jekyll-post>
                                                         </template>
@@ -141,11 +193,11 @@
                                                 </div>
                                             </section>
 
-                                            <template repeat="{{item in navItemsOnpage[0].content}}">
+                                            <template repeat="{{post in navItemsOnpage[0].content}}">
                                                 <section vertical layout>
-                                                    <div class="view" flex vertical layout hero-id="item-{{item}}" hero?="{{$.subpages.selected === item  + 1 || $.subpages.selected === 0}}">
+                                                    <div class="view" flex vertical layout hero-id="item-{{post}}" hero?="{{$.subpages.selected === post  + 1 || $.subpages.selected === 0}}">
 
-                                                        <div class="clearfix page-title"><h1>Testtitel {{item}}</h1></div>
+                                                        <div class="clearfix h"><h1>Testtitel {{post}}</h1></div>
 
                                                         <span on-tap="{{subpageBack}}">
                                                             <paper-jekyll-post
@@ -155,14 +207,14 @@
                                                                 postUrl='/2015/02/21/yay-my-new-material-design-blog-is-up/'
                                                                 published='2015-02-21'
                                                                 titleColor='{{primaryLinkColor}}'>
-                                                                <p>Lorem ipsum #{{item}}..</p>
-                                                                <p>Lorem ipsum #{{item}}..</p>
-                                                                <p>Lorem ipsum #{{item}}..</p>
-                                                                <p>Lorem ipsum #{{item}}..</p>
+                                                                <p>Lorem ipsum #{{post}}..</p>
+                                                                <p>Lorem ipsum #{{post}}..</p>
+                                                                <p>Lorem ipsum #{{post}}..</p>
+                                                                <p>Lorem ipsum #{{post}}..</p>
                                                             </paper-jekyll-post>
                                                         </span>
 
-                                                        <div class="clearfix page-title"><h1>Comments</h1></div>
+                                                        <div class="clearfix h"><h1>Comments</h1></div>
                                                         <!-- disqus plugin -->
 
                                                     </div>
@@ -172,98 +224,115 @@
                                         </core-animated-pages>
 
                                     </div>
-                                </section> <!-- END PAGE 1 (PLUS NESTED SUBPAGES) -->
+                                </section>
 
-                                <!-- PAGE 2 (PORTFOLIO) -->
-								<section layout vertical center class="container">
-									<div id="portfolio" class="page" slide-up>
+                                <!-- END PAGE 1 (PLUS NESTED SUBPAGES) -->
 
-										<div class="clearfix page-title"><h1>{{navItemsOnpage[1].label}}</h1></div>
+                                <!-- PAGE 2 - GITHUB 'PORTFOLIO' -->
 
-										<template repeat="{{item in navItemsOnpage[1].content}}">
-											<paper-card class="fancy" heading="{{item.headline}}" headingColor="{{primaryColor}}" disableSwipe>
-												<div class="no-top" content><div class="medium">{{item.text}}</div></div>
-												<div actions>
-													<paper-button affirmative autofocus><a href="{{item.url}}" target="_blank">View on Github</a></paper-button>
-												</div>
-											</paper-card>
-										</template>
+                                <section layout vertical center class="container">
+                                    <div id="portfolio" class="page" slide-up>
 
-									</div>
-								</section> <!-- END PAGE 2 -->
+                                        <div class="clearfix h"><h1>{{navItemsOnpage[1].label}}</h1></div>
+
+                                        <template repeat="{{project in navItemsOnpage[1].content}}">
+                                            <paper-card class="fancy" heading="{{project.title}}" headingColor="{{primaryColor}}" disableSwipe>
+                                                <div class="no-top" content><div class="medium">{{project.text}}</div></div>
+                                                <div actions>
+                                                    <paper-button affirmative autofocus><a href="{{project.url}}" target="_blank" data-linktype="git">View on Github</a></paper-button>
+                                                </div>
+                                            </paper-card>
+                                        </template>
+
+                                    </div>
+                                </section>
+
+                                <!-- END PAGE 2 -->
 
                                 <!-- PAGE 3 (ABOUT) -->
-								<section layout vertical center class="container">
-									<div id="about" class="page" slide-up>
 
-										<div class="clearfix page-title"><h1>{{navItemsOnpage[2].label}}</h1></div>
+                                <section layout vertical center class="container">
+                                    <div id="about" class="page" slide-up>
 
-										<paper-card class='fancy' disableSwipe>
-										  <div content>
-											<div class="round-placeholder profile" style="top: 8px;{{author.picL != 0 ? 'background-image: url(' + author.picL + ');' : ''}}"></div>
-											<div class="title">
-											  <div class="medium">{{author.name}}</div>
-											  <div class="small">{{author.jobtitle}}</div>
-											</div>
-										  </div>
+                                        <div class="clearfix h"><h1>{{navItemsOnpage[2].label}}</h1></div>
 
-										  <div id="about_content" content></div>
-										  
-										  <div class="no-top" content>
-											<div id="contact" class="big">Contact</div>
-											<div class="medium">You can drop me a mail at <a href="mailto:{{author.email}}">{{author.email}}</a>.</div>
-										  </div>
+                                        <paper-card class='fancy' disableSwipe>
+                                          <div content>
+                                            <div class="round profile" style="top: 8px;{{author.picL != 0 ? 'background-image: url(' + author.picL + ');' : ''}}"></div>
+                                            <div class="title">
+                                              <div class="medium">{{author.name}}</div>
+                                              <div class="small">{{author.jobtitle}}</div>
+                                            </div>
+                                          </div>
 
-										  <!--<div actions>
-											<paper-icon-button on-tap="{{scrollToTop}}" icon="favorite" title="favorite"></paper-icon-button>
-											<paper-icon-button icon="bookmark" title="bookmark"></paper-icon-button>
-											<paper-icon-button icon="send" title="send"></paper-icon-button>
-										  </div>-->
-										</paper-card>
+                                          <div id="about_content" content></div>
 
-									</div>
-								</section> <!-- END PAGE 3 -->
+                                          <div class="no-top" content>
+                                            <div id="contact" class="big">Contact</div>
+                                            <div class="medium">You can drop me a mail at <a href="mailto:{{author.email}}">{{author.email}}</a>.</div>
+                                          </div>
 
-                        </core-animated-pages> <!-- END DRAWER PANEL WRAPPER > MAIN PANEL > MAIN PAGES WRAPPER -->
+                                          <!--<div actions>
+                                            <paper-icon-button on-tap="{{scrollToTop}}" icon="favorite" title="favorite"></paper-icon-button>
+                                            <paper-icon-button icon="bookmark" title="bookmark"></paper-icon-button>
+                                            <paper-icon-button icon="send" title="send"></paper-icon-button>
+                                          </div>-->
+                                        </paper-card>
+
+                                    </div>
+                                </section>
+
+                                <!-- END PAGE 3 -->
+
+                        </core-animated-pages>
+
+                        <!-- END + DRAWER PANEL WRAPPER
+                                 +-+ MAIN PANEL
+                                   +-+ MAIN PAGES WRAPPER -->
 
                         <!-- FAB-SCROLLER -->
                         <paper-fab id="fab" class="{{scrollClass}}" icon="expand-less" title="Go to top" on-tap="{{scrollToTop}}"></paper-fab>
 
                     </core-header-panel>
-                </div> <!-- END DRAWER PANEL WRAPPER > MAIN PANEL -->
+                </div>
 
-            </core-drawer-panel> <!-- END DRAWER PANEL WRAPPER -->
+                <!-- END + DRAWER PANEL WRAPPER
+                         +-+ MAIN PANEL -->
 
-            <!-- HEADER-TOOLBAR DROPDOWN MENU -->
-            <!--<template if="{{dropdownMenu.length > 0}}">-->
-                <paper-dropdown id="drop" class="open-below" halign="right" valign="top">
-                    <div class="menu">
-                        <template repeat="{{item in dropdownMenu}}">
-                            <paper-item rel="{{item.url}}" on-tap="{{selectMenu}}">{{item.label}}</paper-item>
-                        </template>
-                    </div>
-                </paper-dropdown>
-            <!--</template>-->
+            </core-drawer-panel>
+
+            <!-- END DRAWER PANEL WRAPPER -->
+
+            <!-- TOOLBAR DROPDOWN-MENU -->
+            <paper-dropdown id="drop" class="open-below" halign="right" valign="top">
+                <div class="menu">
+                    <template repeat="{{a in dropdownMenu}}">
+                        <paper-item rel="{{a.url}}" on-tap="{{selectMenu}}">{{a.label}}</paper-item>
+                    </template>
+                </div>
+            </paper-dropdown>
+
+            <!-- A "TOAST"-ALERT -->
+            <paper-toast id="toast" text="{{toastText}}"></paper-toast>
 
             <!-- AN ACTION-DIALOG -->
-            <paper-action-dialog style="font-family: 'RobotoDraft', sans-serif;" id="dialog" heading="About this App">
-                <p>This is just a regular HTML website. Frontend layout and logic was implemented with the help of Polymer. The static page was served to you via Jekyll. All three, Polymer Jekyll and this Material Design theme are open source. Grab or share it, if you like it.</p>
+            <paper-action-dialog id="dialog" heading="About this site">
+                <p>This is just a regular HTML website.</p>
+                <p>Frontend layout and logic was implemented with the help of Polymer. The static page was served to you via Jekyll.</p>
+                <p>All three, <a rel="ext" href="https://www.polymer-project.org/" target="_blank" title="Polymer">Polymer</a>, <a rel="ext" href="http://jekyllrb.com/" target="_blank" title="Jekyll">Jekyll</a> and this <a rel="ext" href="https://eyecatchup.github.io/polymer-material-design-jekyll-spa/" target="_blank" title="Free Material Design style Single-Page-Application template with Polymer and Jekyll.">Material Design theme</a> are open source. Grab or share it, if you like it.</p>
                 <paper-button affirmative autofocus>Got it.</paper-button>
             </paper-action-dialog>
 
-            <!-- A "TOAST"-ALERT -->
-            <paper-toast id="toast" text="{{welcomeToast}}"></paper-toast>
-
         </template>
 
-        <!-- Polymer element script -->
-        <script src="material-jekyll.js"></script>
+        <!-- CustomElement shadow-dom script -->
+        <script src="polymer-material-design-jekyll-spa.js"></script>
 
     </polymer-element>
 
-    <material-jekyll></material-jekyll>
+    <polymer-material-design-jekyll-spa></polymer-material-design-jekyll-spa>
 
-    <!-- App script -->
+    <!-- App script (Sets up the instance's page config!) -->
     <script src="app.js"></script>
 </body>
 </html>

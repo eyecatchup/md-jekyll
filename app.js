@@ -83,7 +83,7 @@
                         icon: 'account-box',
                         primaryColor: '#009688',
                         url: 'about',
-                        content: './assets/_pages/about-me.html',
+                        content: './assets/html/about-me.html',
                     }
                 ],
                 navItemsOffpage: [

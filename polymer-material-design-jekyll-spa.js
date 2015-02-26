@@ -357,7 +357,7 @@ Polymer('polymer-material-design-jekyll-spa', {
     },
 
     selectSubpage: function(e) {
-        var i = e.target.templateInstance.model.item,
+        var i = e.target.templateInstance.model.post,
             i = parseFloat(i) + 1;
 
         console.log('[selectSubpage] set subpage view from ' +
